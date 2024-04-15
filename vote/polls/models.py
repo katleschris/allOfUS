@@ -1,9 +1,9 @@
 from django.db import models
 
-# Create your models here.
-class Question(models.model):
-    question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField("date published")
+#Here, each model is represented by a class that subclasses django.db.models.Model. Each model has a number of class variables, each of which represents a database field in the model.
+class Question(models.Model):
+    question_text = models.CharField(max_length=200) #creates column 'question_text' text(characters) datatype 
+    pub_date = models.DateTimeField("date published") #creates column 'pub_date' storing date&time datatype
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
