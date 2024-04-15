@@ -7,8 +7,10 @@ from django.utils import timezone
 class Question(models.Model):
     question_text = models.CharField(max_length=200) #creates column 'question_text' text(characters) datatype 
     pub_date = models.DateTimeField("date published") #creates column 'pub_date' storing date&time datatype
+    
     def __str__(self):
         return self.question_text
+    
     def was_published_recently(self):
         return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
 
