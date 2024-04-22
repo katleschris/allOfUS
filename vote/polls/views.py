@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import Http404
 from django.template import loader
+from django.shortcuts import get_object_or_404, render
 from .models import Question
 
 #In our poll application, we’ll have the following four views(type of webpage ):
@@ -17,12 +18,10 @@ def index(request):
     return render(request, "polls/index.html", context)
 
 #Question “detail” page – displays a question text, with no results but with a form to vote.
+#The get_object_or_404() function takes a Django model as its first argument and an arbitrary number of keyword arguments, which it passes to the get() function of the model’s manager. It raises Http404 if the object doesn’t exist.
 def detail(request, question_id):
-    try:
-        question = Question.objects.get(pk=question_id)
-    except Question.DoesNotExist:
-        raise Http404("Question does not exist")
-    return render(request, "polls/index.html", {"question": question})
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, "polls/detail.html", {"question": question})
 
 #Question “results” page – displays results for a particular question.
 def results(request, question_id):
