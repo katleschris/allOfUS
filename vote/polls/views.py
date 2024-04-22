@@ -1,7 +1,6 @@
 from django.shortcuts import render
-
-# Create your views here.
 from django.http import HttpResponse
+from django.http import Http404
 from django.template import loader
 from .models import Question
 
@@ -19,7 +18,11 @@ def index(request):
 
 #Question “detail” page – displays a question text, with no results but with a form to vote.
 def detail(request, question_id):
-    return HttpResponse("You are looking at question %s." % question_id)
+    try:
+        question = Question.objects.get(pk=question_id)
+    except Question.DoesNotExist:
+        raise Http404("Question does not exist")
+    return render(request, "polls/index.html", {"question": question})
 
 #Question “results” page – displays results for a particular question.
 def results(request, question_id):
