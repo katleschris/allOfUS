@@ -16,7 +16,7 @@
         <legend><h1>{{quesrion.question_text }}</h1></legend>
         {% if error_message %}<P><strong>{{ error_message }}</strong></P>{% endif %}
         {% for choice in question.choice_set.all %}
-           <input for="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+           <input type="radio" for="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
            <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
         {% endfor %}
     </fieldset>
