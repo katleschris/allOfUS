@@ -1,9 +1,10 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.http import Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader
 from django.shortcuts import get_object_or_404, render
-from .models import Question
+from django.db.models import F
+from django.urls import reverse
+
+from .models import Question, Choice
 
 #In our poll application, we’ll have the following four views(type of webpage ):
 
@@ -30,4 +31,21 @@ def results(request, question_id):
 
 #Vote action – handles voting for a particular choice in a particular question.
 def vote(request, question_id):
-    return HttpResponse("You're voting n question %s." % question_id)
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST["choice"]) #request.POST is a dictionary-like object that lets you access submitted data by key name. In this case, request.POST['choice'] returns the ID of the selected choice, as a string. request.POST values are always strings.
+    except (KeyError, Choice.DoesNotExist):
+        # Redisplay the question voting form.
+        return render(
+            request, 
+            "polls/detail.html",
+            {
+                "question": question,
+                "error_message": "You didn't select a choice.",
+            },
+        )
+    else:
+        selected_choice.votes = F("votes") + 1  # instructs the database to increase the vote count by 1.
+        selected_choice.save()
+        #Always return an HttpResponseRedirected after successfully dealing with Post data. This prevents data from being posted twicr if a user hits the Back button.
+        return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
